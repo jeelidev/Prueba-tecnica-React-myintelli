@@ -12,6 +12,7 @@
   --font-mono: JetBrains Mono, ui-monospace, monospace;
 
   --radius: 1rem;
+  --background-transparen-loader: rgba(13, 3, 28, 0.7);
   --background: rgb(15, 16, 23);
   --foreground: rgb(188, 112, 215);
   --card: rgb(24, 29, 51);

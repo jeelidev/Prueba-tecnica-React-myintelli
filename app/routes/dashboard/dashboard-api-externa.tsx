@@ -6,7 +6,10 @@ import { useState, useEffect, useRef } from "react";
 import { Spinner } from "~/components/ui/spinner"
 import { toast } from "sonner"
 import { ScrollArea } from "~/components/ui/scroll-area"
-import {  Search } from "lucide-react"
+import { CharacterDetails } from "~/components/CaracterDetail"
+
+import { Search } from "lucide-react"
+
 import {
   InputGroup,
   InputGroupAddon,
@@ -24,12 +27,17 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "~/components/ui/pagination"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog"
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Listado de api externa - Jeelidev App" },
@@ -40,20 +48,43 @@ export function meta({}: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
     let url = new URL(request.url);
-    let offset = url.searchParams.get("link");
+    let Page = url.searchParams.get("page");
     let link = url.searchParams.get("link");
-    console.log(link)
-    const inneroffset = offset ? Number(offset) : 0
-
-     const rawResponse = await fetch(`https://rickandmortyapi.com/api/character`, {
-      method: 'GET', 
-     })
+    let filter = url.searchParams.get("filter");
+    let activePage = 1
+    let rawResponse 
+        if (link) {
+          const urlLink = new URL(link);
+          const currentPage = urlLink.searchParams.get("page");
+          activePage = currentPage ? Number(currentPage) : 1
+          rawResponse = await fetch(link, {
+              method: 'GET', 
+          })
+        } else if (Page) {
+          activePage = Number(Page)
+          rawResponse = await fetch(`https://rickandmortyapi.com/api/character/?page=${Page}`, {
+             method: 'GET', 
+          })
+        } else if (filter) {
+          rawResponse = await fetch(`https://rickandmortyapi.com/api/character/?name=${filter}`, {
+            method: 'GET', 
+          })
+        } else {
+          rawResponse = await fetch(`https://rickandmortyapi.com/api/character`, {
+            method: 'GET', 
+          })
+        }
   const content = await rawResponse.json()
-    if (!content) {
-        return { data: { result: [], offset: inneroffset }, error:"error desconocido" }
-    } 
+  console.log(content)
+  if (!content) {
+      return { data: { result: [], info: {}, activePage: null }, error:"error desconocido" }
+  } 
+
+  if (content?.error == "There is nothing here") {
+      return { data: { result: [], info: {}, activePage: null }, error:"" }
+  }
     
-  return {data:{ result:content?.results, info: content?.info }, error:"" } 
+  return {data:{ result:content?.results, info: content?.info, activePage}, error:"" } 
   
 }
 
@@ -65,15 +96,56 @@ export default function ApiExterna() {
     const [infoData, setInfoData] = useState<{[name:string]:any}>({});
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const formRefFilter = useRef<HTMLFormElement>(null);
-    const formRefPaginator = useRef<HTMLFormElement>(null);
     const [searchTerm, setSearchTerm] = useState<null | string>(null);
-  /* info: {
-    count: 826,
-    pages: 42,
-    next: 'https://rickandmortyapi.com/api/character?page=2',
-    prev: null
-  },*/
-        useEffect(() => {
+    const [activePage, setActivePage] = useState(1);
+    const [modalOpen, setChangeModal] = useState(false);
+    const [loaderModal, setLoaderModal] = useState(false);
+    const [loaderModalError, setLoaderModalError] = useState<any>(null);
+  
+    const [urlFecth, setUrlFecth] = useState("")
+    const [caracterData, setCaracterData] = useState<{[name:string]:any}>({})
+
+  useEffect(() => {
+            if (!urlFecth) {
+              return;
+            }
+        const fetchDataModal = async () => {
+          const controller = new AbortController();
+          const signal = controller.signal;
+
+          try {
+            setLoaderModal(true);
+            setLoaderModalError(null);
+
+            const response = await fetch(urlFecth, {
+              method: 'GET',
+              signal,
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log(result)
+            setCaracterData(result);
+
+          } catch (err) {
+            // @ts-ignore:
+            if (err && err.name !== 'AbortError') {
+              setLoaderModalError(err);
+            }
+          } finally {
+            setLoaderModal(false);
+          }
+          return () => {
+            controller.abort();
+          };
+        }
+        fetchDataModal();
+    }, [urlFecth]);
+
+      useEffect(() => {
         const handler = setTimeout(() => {
             if (formRefFilter.current && searchTerm !== null) {
                 fetcherFilter.submit(formRefFilter.current);
@@ -95,6 +167,7 @@ export default function ApiExterna() {
         if (initialData?.data?.result) {
             setItems(initialData.data.result);
             setInfoData(initialData.data.info);
+            setActivePage(initialData.data.activePage)
         }
         if (initialData?.error) {
             toast.warning(`Error al cargar datos iniciales: ${initialData.error}`);
@@ -105,12 +178,13 @@ export default function ApiExterna() {
             if (fetcher.data?.data?.result && fetcher.state === 'idle') {
                 setItems(fetcher.data.data.result);
                 setInfoData(fetcher.data.data.info);
+                setActivePage(fetcher.data.data.activePage)
                 setTimeout(() => {
                     if (scrollAreaRef.current) {
                         const scrollElement = scrollAreaRef.current.querySelector('[data-slot="scroll-area-viewport"]');
                         if (scrollElement) {
                             scrollElement.scrollTo({
-                                top: scrollElement.scrollHeight,
+                                top: - scrollElement.scrollHeight,
                                 behavior: 'smooth'
                             });   
                         }
@@ -126,6 +200,7 @@ export default function ApiExterna() {
         if (fetcherFilter.data?.data?.result && fetcherFilter.state === 'idle') {
             setItems(fetcherFilter.data.data.result);
             setInfoData(fetcherFilter.data.data.info);
+            setActivePage(fetcherFilter.data.data.activePage)
 
             if (fetcherFilter.data?.error) {
                 toast.warning(`Error al cargar más datos con filtro: ${fetcherFilter.data.error}`);
@@ -177,9 +252,9 @@ export default function ApiExterna() {
                                                 <ItemContent className="basis-full" >
                                                     <ItemTitle className="text-center w-full flex justify-center pb-3">{item.name}- ID:{item.id}</ItemTitle>
                                                     <ItemDescription className=" w-full flex justify-center">
-                                                         <Button className="cursor-pointer" onClick={()=>{ console.log(item.url)}}>
+                                                <Button className="cursor-pointer" onClick={() => { setChangeModal(true); setUrlFecth(item.url) }}>
                                                               Ver Detalles
-                                                         </Button>
+                                                </Button>
                                                     </ItemDescription>
                                                 </ItemContent>
                                             </Item>
@@ -193,28 +268,41 @@ export default function ApiExterna() {
                     <Spinner className="size-8" />
                 </div>
             }
-            <div className="w-full flex justify-center absolute bottom-0 pb-5">
-                            <Pagination>
+          <div className="w-full flex justify-center absolute bottom-0 pb-5">                            
+                            <Pagination className="max-w-[600px]">
                               <PaginationContent>
                                 <PaginationItem>
                                  <PaginationPrevious disabled={!infoData.prev} onClick={()=>{ eventoEnvio({tipo:"link", dato:infoData.prev})}}  />
                                 </PaginationItem>
-                                <PaginationItem>
-                  <PaginationLink >1</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                  <PaginationLink >2</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
+                                  <PaginationItem>
+                  {Array.from({ length: infoData.pages }, (_, i) => i).map((itemPage) => {
+                    if(itemPage > 10 || itemPage== 0) {
+                        return null
+                    } else {
+                      return (      <PaginationLink key={itemPage} className={ activePage == itemPage ? "text-(--accent-foreground) bg-(--foreground)" : "" }  onClick={()=>{ eventoEnvio({tipo:"page", dato:itemPage})}} >{itemPage}</PaginationLink>)
+                    } 
+                  })}             </PaginationItem>
+                                  <PaginationItem>
                                   <PaginationNext disabled={!infoData.next} onClick={()=>{ eventoEnvio({tipo:"link", dato:infoData.next})}}/>
                                 </PaginationItem>
                               </PaginationContent>
                             </Pagination>
-            </div>
+          </div>
+                            <Dialog open={modalOpen} onOpenChange={(estatus)=>{setChangeModal(estatus)}}>
+                              <DialogContent className="xs:max-w-[95%] sm:max-w-[85%] lg:max-w-[70%] xl:max-w-[800px] min-h-[400px]">
+                                
+                              {loaderModal ?
+                                <div className="size-full flex justify-center items-center">
+                                    <Spinner className="size-8" />
+                                </div>
+                                :
+                                <DialogHeader>
+                                    <DialogTitle>Detalles de { caracterData?.name}</DialogTitle>
+                                    <CharacterDetails  character={caracterData} />
+                                </DialogHeader>
+                              }
+                              </DialogContent>
+                            </Dialog>
         </div>
         </>
   )

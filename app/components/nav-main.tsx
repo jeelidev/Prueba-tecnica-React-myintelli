@@ -15,7 +15,8 @@ export function NavMain({
     icon: LucideIcon
     isActive?: boolean
   }[]
-}) {
+  }) {
+
   return (
     <SidebarMenu>
       {items.map((item) => (
@@ -24,7 +25,7 @@ export function NavMain({
              {({ isActive }) => (
               <SidebarMenuButton isActive={isActive}>
                   <item.icon />
-                  <span>{item.title}</span>
+                <span>{item.title}</span>
               </SidebarMenuButton>
               )}
           </NavLink>

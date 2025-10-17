@@ -37,8 +37,8 @@ export function NavWorkspaces({
       <SidebarGroupLabel>Modulos</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {modulos.map((modulo) => (
-            <Collapsible key={modulo.name}>
+          {modulos.map((modulo, index) => (
+            <Collapsible key={`${modulo.name}-${index}`}>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">

@@ -27,6 +27,9 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Dashboard" },
   ];
 }
+import { useNavigation } from "react-router";
+import { Spinner } from "~/components/ui/spinner"
+
 
 export async function loader({ request, context }: Route.ActionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -49,6 +52,8 @@ export async function loader({ request, context }: Route.ActionArgs) {
 
 
 export default function index() {
+  const navegation = useNavigation()
+  const inNavecation = navegation.state != "idle" 
   const { fullName, email, modules} = useLoaderData<typeof loader>()
   return (
     <SidebarProvider>
@@ -78,6 +83,9 @@ export default function index() {
         <div className="flex flex-1 flex-col gap-4 px-4 pt-10">
           <Outlet/>
         </div>
+        {inNavecation && <div className="fixed size-svh flex justify-center items-center bg-(--background-transparen-loader)">
+          <Spinner/>
+        </div>}
       </SidebarInset>
     </SidebarProvider>
   )
