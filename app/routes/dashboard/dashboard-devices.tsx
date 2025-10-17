@@ -150,7 +150,7 @@ export default function Divices() {
                             </div>
                         :
                             <ScrollArea ref={scrollAreaRef} className="flex-grow w-full max-h-(--calc-height-devices) pt-12 mask-b-from-10% mask-b-to-100% ">
-                                <ItemGroup className="flex w-full flex-row flex-wrap gap-4 mb-[32%]">
+                                <ItemGroup className="flex w-full flex-row flex-wrap gap-4 mb-[32%] justify-center">
                                     {items.map((item: any) => {
                                         return (
                                             <Item key={item.id_device} className="min-w-70  max-w-90 w-1/3" variant="outline">
