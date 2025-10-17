@@ -4,12 +4,19 @@ services:
       context: .
       args:
         - DB_FILE_NAME=${DB_FILE_NAME}
+    entrypoint: /app/entrypoint.sh
+    command: pnpm start
     restart: always
     ports:
       - "3000:3000"
     environment:
+      - DATABASE_URL=${DB_FILE_NAME}
       - HOST=${HOST}
       - PORT=${PORT}
-      - DATABASE_URL=${DB_FILE_NAME}.
+    volumes:
+      - db-data:/app/db
     env_file:
       - .env
+
+volumes:
+  db-data:
