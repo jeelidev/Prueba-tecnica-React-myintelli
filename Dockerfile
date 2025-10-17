@@ -11,4 +11,5 @@ ENV DATABASE_URL=${DB_FILE_NAME}
 RUN pnpm drizzle-kit migrate
 RUN pnpm build
 EXPOSE 3000
+
 CMD ["pnpm", "start"]
