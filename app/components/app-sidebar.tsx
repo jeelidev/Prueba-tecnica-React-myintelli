@@ -1,152 +1,38 @@
 import * as React from "react"
 import {
-  AudioWaveform,
-  Blocks,
-  Calendar,
-  Command,
-  Home,
-  Inbox,
-  MessageCircleQuestion,
+  LogOut,
   Search,
-  Settings2,
   Sparkles,
-  Trash2,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { NavFavorites } from "~/components/nav-favorites"
 import { NavMain } from "~/components/nav-main"
-import { NavSecondary } from "~/components/nav-secondary"
 import { NavWorkspaces } from "~/components/nav-workspaces"
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarRail,
 } from "~/components/ui/sidebar"
 
 // This is sample data.
 const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: Command,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Search",
-      url: "#",
+      title: "Listar Dispositivos",
+      url: "list-devices",
       icon: Search,
     },
     {
-      title: "Ask AI",
-      url: "#",
+      title: "Listar api externa",
+      url: "list-api-externa",
       icon: Sparkles,
     },
     {
-      title: "Home",
-      url: "#",
-      icon: Home,
-      isActive: true,
-    },
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-      badge: "10",
+      title: "LogOut",
+      url: "log-out",
+      icon: LogOut,
     },
   ],
-  navSecondary: [
-    {
-      title: "Calendar",
-      url: "#",
-      icon: Calendar,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-    },
-    {
-      title: "Templates",
-      url: "#",
-      icon: Blocks,
-    },
-    {
-      title: "Trash",
-      url: "#",
-      icon: Trash2,
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: MessageCircleQuestion,
-    },
-  ],
-  favorites: [
-    {
-      name: "Project Management & Task Tracking",
-      url: "#",
-      emoji: "📊",
-    },
-    {
-      name: "Family Recipe Collection & Meal Planning",
-      url: "#",
-      emoji: "🍳",
-    },
-    {
-      name: "Fitness Tracker & Workout Routines",
-      url: "#",
-      emoji: "💪",
-    },
-    {
-      name: "Book Notes & Reading List",
-      url: "#",
-      emoji: "📚",
-    },
-    {
-      name: "Sustainable Gardening Tips & Plant Care",
-      url: "#",
-      emoji: "🌱",
-    },
-    {
-      name: "Language Learning Progress & Resources",
-      url: "#",
-      emoji: "🗣️",
-    },
-    {
-      name: "Home Renovation Ideas & Budget Tracker",
-      url: "#",
-      emoji: "🏠",
-    },
-    {
-      name: "Personal Finance & Investment Portfolio",
-      url: "#",
-      emoji: "💰",
-    },
-    {
-      name: "Movie & TV Show Watchlist with Reviews",
-      url: "#",
-      emoji: "🎬",
-    },
-    {
-      name: "Daily Habit Tracker & Goal Setting",
-      url: "#",
-      emoji: "✅",
-    },
-  ],
-  workspaces: [
+  modulos: [
     {
       name: "Personal Life Management",
       emoji: "🏠",
@@ -254,10 +140,55 @@ const data = {
     },
   ],
 }
+interface Page {
+  name: string;
+  url: string;
+  emoji: React.ReactNode;  
+};
+interface modules  {
+    name: string
+    emoji: React.ReactNode
+    pages: Page[]
+  }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> & { fullName?:string,
   email?:string,
-  modules?:any[]}) {
+  modules?: any[]
+}) {
+  const [modulesDepurador, setModulesDepurador] = React.useState<modules[]>([])
+  const getRandomEmoji = () => {
+    
+  const emojis = [
+    "📸", "🌎", "🗺️", "🧳", "📅", "🔧", "💰", "🏡", "🎵", "🖼️", 
+    "✍️", "🎨", "🤝", "🧠", "🎯", "💼", "🌟", "🍏", "📔", "🏠"
+  ];
+  const randomIndex = Math.floor(Math.random() * emojis.length);
+
+  return emojis[randomIndex];
+  }
+  const objectToKeyValueArray = (dataObject:{[name:string]:any}) => {
+  return Object.entries(dataObject).map(([key, value]) => `${key} - ${value}`);
+}
+  React.useEffect(() => {
+    if (props.modules && props.modules?.length > 0) {
+      let finalsModules = []
+      finalsModules = props.modules.map((module) => {
+      return {
+        name: module.module as string,
+        emoji: getRandomEmoji() as React.ReactNode,
+        pages: objectToKeyValueArray(module.setting_module_config).map((page) => {
+          return {
+            name: page as string,
+            url: "#",
+            emoji: getRandomEmoji() as React.ReactNode,
+          }
+        })
+      }
+      }) 
+      setModulesDepurador(finalsModules)
+    }
+  }, [ props.modules ])
+
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
@@ -272,12 +203,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> & 
             <span className="truncate font-medium">{props.fullName}</span>
             <span className="truncate font-light text-sm">{props.email}</span>
           </p>
-            
         </div>
         <NavMain items={data.navMain} />
       </SidebarHeader>
       <SidebarContent>
-        <NavWorkspaces workspaces={data.workspaces} />
+        <NavWorkspaces modulos={modulesDepurador} />
       </SidebarContent>
 
     </Sidebar>

@@ -12,7 +12,7 @@ export default async function authMiddleware({
 
     if (!session.get("id") || !session.get("statusSession") || session.get("finLastSession") < new Date()) {
       destroySession(session)
-      //throw redirect("/");
+      throw redirect("/");
     } else {
       console.log("pase")
       let date = new Date();

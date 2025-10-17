@@ -23,6 +23,12 @@ import {
     ItemTitle,
 } from "~/components/ui/item"
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Listado de dispositivos - Jeelidev App" },
+    { name: "description", content: "Listado de dispositivos" },
+  ];
+}
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
     let url = new URL(request.url);
@@ -91,7 +97,6 @@ export default function Divices() {
                 setNextOffset(fetcher.data.data.offset);
                 setTimeout(() => {
                     if (scrollAreaRef.current) {
-                        console.log(scrollAreaRef.current)
                         const scrollElement = scrollAreaRef.current.querySelector('[data-slot="scroll-area-viewport"]');
                         if (scrollElement) {
                             scrollElement.scrollTo({

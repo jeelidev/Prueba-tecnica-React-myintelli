@@ -22,12 +22,15 @@ import {
 import { Input } from "~/components/ui/input"
 import logo from "./images/Logo-prueba.png"
 import { useFetcher } from "react-router";
+import { Spinner } from "~/components/ui/spinner"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const loginFetcher = useFetcher()
+  const isLoading = loginFetcher.state !== "idle";
+
   let error = loginFetcher.data?.error;
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -76,7 +79,7 @@ export function LoginForm({
                 <Input id="password" type="password" name="password" required />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isLoading}>{isLoading ? <Spinner/> : "Login" }</Button>
                 <FieldDescription className="text-center">
                   no esta registrado? <a href="#">Registrarse</a>
                 </FieldDescription>

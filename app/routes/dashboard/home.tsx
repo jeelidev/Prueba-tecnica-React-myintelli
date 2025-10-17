@@ -2,13 +2,11 @@ import type { Route} from "./+types/home";
 import {
   Item,
   ItemContent,
-  ItemDescription,
   ItemGroup,
   ItemHeader,
   ItemTitle,
 } from "~/components/ui/item"
 import SetTitleBread from "~/components/triggersClient/setTitleBread"
-import Button from "../../components/buttom"
 import { MonitorSmartphone, Microscope } from "lucide-react"
 import {NavLink} from "react-router"
 

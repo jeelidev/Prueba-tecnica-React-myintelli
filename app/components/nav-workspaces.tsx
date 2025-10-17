@@ -1,4 +1,4 @@
-import { ChevronRight, MoreHorizontal, Plus } from "lucide-react"
+import { ChevronRight, Plus } from "lucide-react"
 
 import {
   Collapsible,
@@ -17,31 +17,33 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar"
-
-export function NavWorkspaces({
-  workspaces,
-}: {
-  workspaces: {
+interface Page {
+  name: string;
+  url: string;
+  emoji: React.ReactNode;  
+};
+interface modules  {
     name: string
     emoji: React.ReactNode
-    pages: {
-      name: string
-      emoji: React.ReactNode
-    }[]
-  }[]
+    pages: Page[]
+  }
+export function NavWorkspaces({
+  modulos,
+}: {
+  modulos:modules[]
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
+      <SidebarGroupLabel>Modulos</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {workspaces.map((workspace) => (
-            <Collapsible key={workspace.name}>
+          {modulos.map((modulo) => (
+            <Collapsible key={modulo.name}>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">
-                    <span>{workspace.emoji}</span>
-                    <span>{workspace.name}</span>
+                    <span>{modulo.emoji}</span>
+                    <span>{modulo.name}</span>
                   </a>
                 </SidebarMenuButton>
                 <CollapsibleTrigger asChild>
@@ -57,7 +59,7 @@ export function NavWorkspaces({
                 </SidebarMenuAction>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {workspace.pages.map((page) => (
+                    {modulo.pages.map((page) => (
                       <SidebarMenuSubItem key={page.name}>
                         <SidebarMenuSubButton asChild>
                           <a href="#">
@@ -72,12 +74,6 @@ export function NavWorkspaces({
               </SidebarMenuItem>
             </Collapsible>
           ))}
-          <SidebarMenuItem>
-            <SidebarMenuButton className="text-sidebar-foreground/70">
-              <MoreHorizontal />
-              <span>More</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

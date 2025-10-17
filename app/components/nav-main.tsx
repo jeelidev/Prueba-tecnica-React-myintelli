@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react"
-
+import {NavLink} from "react-router"
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -20,12 +20,14 @@ export function NavMain({
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton asChild isActive={item.isActive}>
-            <a href={item.url}>
-              <item.icon />
-              <span>{item.title}</span>
-            </a>
-          </SidebarMenuButton>
+          <NavLink to={item.url}>
+             {({ isActive }) => (
+              <SidebarMenuButton isActive={isActive}>
+                  <item.icon />
+                  <span>{item.title}</span>
+              </SidebarMenuButton>
+              )}
+          </NavLink>
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
