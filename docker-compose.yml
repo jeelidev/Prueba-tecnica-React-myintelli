@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        - DB_FILE_NAME=${DB_FILE_NAME}
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=${HOST}
+      - PORT=${PORT}
+      - DATABASE_URL=${DB_FILE_NAME}.
+    env_file:
+      - .env
