@@ -45,7 +45,6 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
         'Content-Type': 'application/json' 
       }
      })
-    console.log(rawResponse)
     const content = await rawResponse.json()
     if (content?.status != 200 && content?.message) {
         return {data: { result: [], offset: inneroffset }, error:content?.message }

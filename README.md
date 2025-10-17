@@ -1,87 +1,56 @@
-# Welcome to React Router!
+# Proyecto de react router 7 en modo frameswork para prueba tecnica, realizado por Jese Brito ' !'
 
 A modern, production-ready template for building full-stack React applications using React Router.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+[![Ver proyecto en produccion]](https://prueba-tecnica-react-myintelli.jeelidev.uk/))
 
-## Features
+## QUE HICE ' !'
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- 🚀 Se uso renderizado del lado del servidor, para las cosas sensibles de seguridad como el respalde de manejode se sesiones de usuario al hacer login
+- ⚡️ El token se almacena en una tabla de sessiones de sqlite, que permite mantener el token una ves obtenido desde el servicio de myintelli. siempre del lado del servidor, y desde ahi se envia para obtener toda la informacion sensible de la api de devices posteriormente
+- ⚡️ Posee un middleware de Authenticacion que ordena redireccioes del lado del servidor al no encontrar sessiones activas en la base de datos o cookies de session en el cliente manteniendo las rutas del dasboards solo accecibles con una sesion activa, ademas monitorea constante mente el estado para sacarte del session se vence tu cookie o se se vence tu tiempo se session en base de datos
+- 📦 Se implemento la logica de uso de contexto del lado del cliente tambien, a pesar de estar usando el react router en su version 7 en modo frameswork la mayor parte de las consultas del lado del servidor, se realizo un contexto Redux Casero con el contex de react, capas cambiar los titulos de las secciones de consultas de cada api (todo desde el navegador sin depenser de fech al servidor)
+- 🔄 Se realizo todo lo solicitado en la prueba tecnica, consultar api de devices, filtar la lista, cargadores en toda session o solicitud que necesitara ansincronica, y flujos de actualizacion y revalidacion de session
+- 🔒 SE USO TAILWIND Y UNA LIBRERIA DE COMPONENTES LLAMADA shadcn  PERO NO SE COPIO Y PEGO NADA MAS, se modifico y adapto cada componente y estilo, desde el color, hasta los espaciados y efectos, para obtener una experienci acorde a las necesidades del proyecto
+- 🎉 Tiene un manejo y soporte de migracion de schemas de db con drizzle paro poder dar soporte a las sesiones del usuario del lado el servidor
+- 📖 MIL GRACIAS SI LEISTE TODO ESTO
 
-## Getting Started
+## COMO PROBAR EL PROYECTO
 
 ### Installation
 
-Install the dependencies:
+PRIMERO que nada en cualquiera de los dos casos de ejecucion a continuacion, vas a necesitar tener en tu carpeta local tu propia version de .env, creada a partir del .env.example de este proyecto
+
+Le he creado un docker personalizado para despliegue en modo de produccion, para mi coolify, si tiene instalado docker instalado simplemente ejecuta en consola
+
+```bash
+docker compose up --build
+```
+
+y listo todo sera MAGIA, o en si defecto el homologo de este comando en windows o mac, desde la carpeta raiz del proyecto
+
+SI NO TIENES DOCKER, O LO ODIAS A MUERTE POR QUE ESAS SON COSAS DE DEVOPS Y TU NO ERES DEVOPS
+
+te tengo un clasico
+
+Instala dependencias
 
 ```bash
 npm install
 ```
 
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
+Compila el proyecto
 
 ```bash
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+Ejecuta en modo de produccion y entra por localhost:3000 (o lo que sea que colocaste en tu .even)
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+npm run start
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+Y listo, creo que no hay mucho mas que explicar lo demas (por donde navegar que ver, etc, es tal cual loque se pidio en la prueba tecnica, osea el pdf)
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+GRACIAS  ❤️

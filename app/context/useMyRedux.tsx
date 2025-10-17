@@ -27,7 +27,6 @@ export function UseReduxProvider({ children }: { children: React.ReactNode }) {
     });
     useEffect(() => {
       const persistente = localStorage.getItem("client-persisten-status")  
-      console.log(persistente)
       if (persistente) {
         const ObjectPersistente = JSON.parse(persistente)
         dispachContextRedux({...ObjectPersistente})

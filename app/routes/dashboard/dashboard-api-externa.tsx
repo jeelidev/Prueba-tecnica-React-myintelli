@@ -75,7 +75,6 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
           })
         }
   const content = await rawResponse.json()
-  console.log(content)
   if (!content) {
       return { data: { result: [], info: {}, activePage: null }, error:"error desconocido" }
   } 
@@ -127,7 +126,6 @@ export default function ApiExterna() {
             }
 
             const result = await response.json();
-            console.log(result)
             setCaracterData(result);
 
           } catch (err) {

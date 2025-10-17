@@ -14,7 +14,6 @@ export default async function authMiddleware({
       destroySession(session)
       throw redirect("/");
     } else {
-      console.log("pase")
       let date = new Date();
       date.setMinutes(date.getMinutes() + 2);
       session.set("finLastSession", date)

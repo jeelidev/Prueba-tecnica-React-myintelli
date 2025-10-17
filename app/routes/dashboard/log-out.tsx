@@ -16,7 +16,6 @@ export async function loader({ request }: Route.ActionArgs) {
   const SessionObject = await getSession(request.headers.get("Cookie"))
           let ExpierDate = new Date();
   ExpierDate.setFullYear(ExpierDate.getFullYear() - 30);
-  console.log(ExpierDate)
   if (SessionObject.get("statusSession") && SessionObject.get("id")) { 
     SessionObject.set("statusSession", false)
     SessionObject.set("finLastSession", new Date())
