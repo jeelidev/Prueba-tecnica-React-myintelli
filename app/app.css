@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --calc-general-loader-white: calc(100% - 270px);
   --calc-height-devices: calc(100svh - 133px);
   --my-spacing-svh: 150svh;
   --my-cal-height: calc(var(--my-spacing-svh) * 0.56);

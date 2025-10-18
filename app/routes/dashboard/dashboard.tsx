@@ -83,7 +83,7 @@ export default function index() {
         <div className="flex flex-1 flex-col gap-4 px-4 pt-10">
           <Outlet/>
         </div>
-        {inNavecation && <div className="fixed size-svh flex justify-center items-center bg-(--background-transparen-loader)">
+        {inNavecation && <div className="fixed h-svh w-(--calc-general-loader-white) flex justify-center items-center bg-(--background-transparen-loader)">
           <Spinner/>
         </div>}
       </SidebarInset>

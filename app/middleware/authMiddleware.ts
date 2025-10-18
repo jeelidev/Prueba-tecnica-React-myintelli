@@ -1,31 +1,48 @@
-import { redirect , type ActionFunctionArgs} from "react-router"
-import {  getSession, destroySession,commitSession } from "~/lib/sessionManager.server"
+import { redirect, type ActionFunctionArgs } from "react-router";
+import { getSession, destroySession, commitSession } from "~/lib/sessionManager.server";
 
 export default async function authMiddleware({
   request,
-  context
+  context,
 }: ActionFunctionArgs, next: () => Promise<Response>) {
-  const Cookies = request.headers.get("Cookie")
+  const cookieHeader = request.headers.get("Cookie");
 
-  if (Cookies) {
-    const session = await getSession(request.headers.get("Cookie"));
+  if (!cookieHeader) {
 
-    if (!session.get("id") || !session.get("statusSession") || session.get("finLastSession") < new Date()) {
-      destroySession(session)
-      throw redirect("/");
-    } else {
-      let date = new Date();
-      date.setMinutes(date.getMinutes() + 2);
-      session.set("finLastSession", date)
-      commitSession(session)
-    }
-    //context.set(userContext, session.data as UserSession);
-
-    //const user = await getUserById(userId);
-    //context.set(userContext, user);
-  } else {
-    //throw redirect("/");
+    throw redirect("/");
   }
-  let response = await next();
-  return response
-};
+
+  const session = await getSession(cookieHeader);
+
+
+  const finLastSession = session.get("finLastSession")
+    ? new Date(session.get("finLastSession"))
+    : null;
+
+  if (
+    !session.get("id") ||
+    !session.get("statusSession") ||
+    !finLastSession ||
+    finLastSession < new Date()
+  ) {
+
+    throw redirect("/", {
+      headers: {
+        "Set-Cookie": await destroySession(session),
+      },
+    });
+  }
+
+
+  let newExpiryDate = new Date();
+  newExpiryDate.setMinutes(newExpiryDate.getMinutes() + 2); 
+
+
+  session.set("finLastSession", newExpiryDate);
+
+  const response = await next();
+
+  response.headers.append("Set-Cookie", await commitSession(session));
+
+  return response;
+}
