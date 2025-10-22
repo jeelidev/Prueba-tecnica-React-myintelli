@@ -21,7 +21,7 @@
   --destructive: rgb(186, 35, 35);
   --destructive-foreground: rgb(241, 124, 124);
   --border: rgb(173, 220, 255);
-  --input: rgb(173, 220, 255);
+  --input: rgb(229, 244, 255);
   --ring: rgb(161, 161, 161);
   --chart-1: rgb(181, 70, 43);
   --chart-2: rgb(38, 105, 98);
@@ -193,17 +193,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: black;
+  background: white;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #712f91;
+  background: #2385f4;
   border-radius: 4px;
   cursor: grab;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #712f91;
+  background: #2385f4;
 }
 @layer base {
   * {
@@ -237,6 +237,55 @@ body {
   :root {
     --my-spacing-svh: 95svh;
   }
+}
+.class-gradient-login {
+  background: #2385f4;
+  background: linear-gradient(
+    180deg,
+    rgba(35, 133, 244, 0.72) 1%,
+    rgba(255, 255, 255, 1) 31%,
+    rgba(255, 255, 255, 0.71) 75%,
+    rgba(113, 102, 228, 0.72) 100%
+  );
+}
+.custom-shape-divider-top-1761149030 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.custom-shape-divider-top-1761149030 svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 141px;
+}
+
+.custom-shape-divider-top-1761149030 .shape-fill {
+  fill: #2385f4;
+}
+.custom-shape-divider-bottom-1761149226 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1761149226 svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 141px;
+}
+
+.custom-shape-divider-bottom-1761149226 .shape-fill {
+  fill: #7166e4;
 }
 /*@media screen and (max-height: 1500px) {
   :root {
