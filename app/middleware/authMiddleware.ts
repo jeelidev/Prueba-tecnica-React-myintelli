@@ -35,7 +35,7 @@ export default async function authMiddleware({
 
 
   let newExpiryDate = new Date();
-  newExpiryDate.setMinutes(newExpiryDate.getMinutes() + 2); 
+  newExpiryDate.setMinutes(newExpiryDate.getMinutes() + 2);
 
 
   session.set("finLastSession", newExpiryDate);

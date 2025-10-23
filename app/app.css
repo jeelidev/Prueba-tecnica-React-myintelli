@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --max-height-filtros: calc(100svh - 56px);
   --background: rgb(255, 255, 255);
   --foreground: rgb(10, 10, 10);
   --card: rgb(255, 255, 255);
@@ -274,6 +275,7 @@ body {
   width: 100%;
   overflow: hidden;
   line-height: 0;
+  z-index: 0;
   transform: rotate(180deg);
 }
 
